@@ -20,7 +20,10 @@ class FeedExtenderHandler(FeedHandler):
         self.tag = tag
 
     def file_name(self):
-        return self.url.split("/")[2]
+        if not self.url.startswith("http://feeds.feedburner.com"):
+            return ".".join(self.url.split("/")[2].split(".")[:-1]).replace("www.", "")
+        else:
+            return self.url.split("/")[-1]
 
     def generate_feed(self):
         orig = parse(self.url)

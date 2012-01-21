@@ -35,6 +35,9 @@ class FeedExtenderHandler(FeedHandler):
         for i in orig.entries:
             soup = BeautifulSoup(urlopen(i.link).read())
             content = unicode(soup.find(self.tag, **{self.attr: self.key}))
-            result.items.append(dict(description=content, title=i.title, link=i.link, guid=i.get("guid"), pubDate=mktime(date_parse(i.get("date")).timetuple())))
+            item = dict(description=content, title=i.title, link=i.link, guid=i.get("guid"))
+            if i.get("date"):
+                item["pubDate"] = mktime(date_parse(i["date"]).timetuple())
+            result.items.append(item)
 
         result.format_rss2_file(config.path + "result/" + self.file_name())
